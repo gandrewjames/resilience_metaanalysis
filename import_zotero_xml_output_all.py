@@ -552,4 +552,44 @@ for thisfile in [roifile_res,roifile_res_BD,roifile_res_MDD,roifile_res_PTSD,roi
         f.write(TEMP)
     f.close()
 
+## Contrast analyses
+# In order to compare activations predicting resilience in one disorder vs. another, have to generate a pooled text file of coordinates
+# Next generate ALE on pooled sample
+# Then gingerALE will compare pooled sample ALE vs. individual sample ALE
+#
+# Logic:  for 4 disorders, iteratively open and combine text file of coordinates
 
+disorders = ['PTSD','SZ','MDD','BD']
+for i in range(len(disorders)):
+    dis1 = disorders[i]
+    for j in range(i+1,len(disorders)):
+        dis2 = disorders[j]
+        file1 = eval('roifile_res_' +dis1)
+        file2 = eval('roifile_res_' + dis2)
+        fileout = './rois_resilience_combined_' + dis1 + '_' + dis2 + '.txt'
+        with open(file1, 'r', encoding='utf-8') as f1:
+            coords1 = f1.read()
+        with open(file2, 'r', encoding='utf-8') as f2:
+            coords2 = f2.read()
+        # note: confirmed that each file ends in a line break, so can just concatenate
+        coords3 = coords1 + coords2
+        with open(fileout, 'w', encoding='utf-8') as f3:
+            f3.write(coords3)
+
+
+# and repeat for susceptibility
+for i in range(len(disorders)):
+    dis1 = disorders[i]
+    for j in range(i+1,len(disorders)):
+        dis2 = disorders[j]
+        file1 = eval('roifile_sus_' +dis1)
+        file2 = eval('roifile_sus_' + dis2)
+        fileout = './rois_susceptibility_combined_' + dis1 + '_' + dis2 + '.txt'
+        with open(file1, 'r', encoding='utf-8') as f1:
+            coords1 = f1.read()
+        with open(file2, 'r', encoding='utf-8') as f2:
+            coords2 = f2.read()
+        # note: confirmed that each file ends in a line break, so can just concatenate
+        coords3 = coords1 + coords2
+        with open(fileout, 'w', encoding='utf-8') as f3:
+            f3.write(coords3)
