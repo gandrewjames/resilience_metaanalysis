@@ -12,6 +12,11 @@
 # So creating this composite file to generate both serially.
 # This file will also create dictionaries of exclusion and inclusion criteria.
 #
+# Update September 4 2024:  Manuscript last week. Better late than never.
+# For the manuscript, I renamed the Zotero bibliography to be more specific. New bibliography name is:
+#       Resilience_Systematic_Review.xml
+# Filename was updated below and changes pushed to github.
+#
 # Copyright Andrew James PhD, 5-2-2024
 
 ## Initializing
@@ -37,7 +42,7 @@ ctx.verify_mode = ssl.CERT_NONE
 
 # declare XML file to read and Sleuth/GingerALE text output
 #  note, hardcoded
-xml_filename = dir_data + 'R01_Resilience_Metaanalysis.xml'
+xml_filename = dir_data + 'Resilience_Systematic_Review.xml' # library was renamed for mansucript submission to be more specific;  filename updated here 9/4/2024
 roifile_res = './rois_resilience.txt'
 roifile_res_MDD = './rois_resilience_MDD.txt'
 roifile_res_PTSD = './rois_resilience_PTSD.txt'
