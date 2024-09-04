@@ -12,8 +12,7 @@
 # So creating this composite file to generate both serially.
 # This file will also create dictionaries of exclusion and inclusion criteria.
 #
-# Update September 4 2024:  Manuscript last week. Better late than never.
-# For the manuscript, I renamed the Zotero bibliography to be more specific. New bibliography name is:
+# Update September 4 2024:  Manuscript submitted last week. For the manuscript, I renamed the Zotero bibliography as:
 #       Resilience_Systematic_Review.xml
 # Filename was updated below and changes pushed to github.
 #
