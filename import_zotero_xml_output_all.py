@@ -16,6 +16,11 @@
 #       Resilience_Systematic_Review.xml
 # Filename was updated below and changes pushed to github.
 #
+#
+# Update March 17, 2025:  Per reviewer recommendations, added additional references not captured by systematic review.
+# These references are included in subfolder "5 added during review" and have flag "5th keep" (for "5th pass")
+# Will modify code to include "5th keep" articles and exclude "5th exclude" articles
+#
 # Copyright Andrew James PhD, 5-2-2024
 
 ## Initializing
@@ -41,7 +46,7 @@ ctx.verify_mode = ssl.CERT_NONE
 
 # declare XML file to read and Sleuth/GingerALE text output
 #  note, hardcoded
-xml_filename = dir_data + 'Resilience_Systematic_Review.xml' # library was renamed for mansucript submission to be more specific;  filename updated here 9/4/2024
+xml_filename = dir_data + 'Resilience_Systematic_Review_2025.xml' # library was renamed for mansucript submission to be more specific;  filename updated here 9/4/2024
 roifile_res = './rois_resilience.txt'
 roifile_res_MDD = './rois_resilience_MDD.txt'
 roifile_res_PTSD = './rois_resilience_PTSD.txt'
@@ -110,7 +115,7 @@ with open(roifile_res, 'w', encoding='utf-16') as f:
             # extract year
             thisdate = thisrecord.findall('dates')
             thisyear = thisdate[0][0].text
-            #print(thisyear)
+            print(thisyear)
 
             # extract first author surname
             thiscontributors = thisrecord.findall('contributors')
@@ -120,7 +125,7 @@ with open(roifile_res, 'w', encoding='utf-16') as f:
                 thisauthor_full = thiscontributors[0][0][0].text
             thisauthor_split = thisauthor_full.split(',')
             thisauthor_lastname = thisauthor_split[0]
-            #print(thisauthor_lastname)
+            print(thisauthor_lastname)
 
             # initialize sample size to 0;   will replace with N=xxx in research-notes  later
             N=0
@@ -202,11 +207,14 @@ with open(roifile_res, 'w', encoding='utf-16') as f:
                     elif entry.startswith("N"):
                         print_flag = 0
                     elif entry.startswith("n"):
-                        print_flag=0
+                        print_flag = 0
                     elif entry.startswith("4th sample") or entry.startswith("3rd sample"):
+                        print_flag = 0
+                    elif entry.startswith("5th"):
                         print_flag = 0
 
                     if print_flag == 1: # if print_flag is still 1, then there are one or more lines of coordinates to write
+                        print(entry)
                         entry_split = entry.split()
                         str_to_write = str_to_write + str(entry_split[1]) + ' ' + str(entry_split[2]) + ' ' +  str(entry_split[3]) + str('\n')
 
@@ -351,8 +359,10 @@ with open(roifile_sus, 'w', encoding='utf-16') as f:
                     elif entry.startswith("N"):
                         print_flag = 0
                     elif entry.startswith("n"):
-                        print_flag=0
+                        print_flag = 0
                     elif entry.startswith("4th sample") or entry.startswith("3rd sample"):
+                        print_flag = 0
+                    elif entry.startswith("5th"):
                         print_flag = 0
 
                     if print_flag == 1: # if print_flag is still 1, then there are one or more lines of coordinates to write
