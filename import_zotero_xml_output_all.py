@@ -21,6 +21,8 @@
 # These references are included in subfolder "5 added during review" and have flag "5th keep" (for "5th pass")
 # Will modify code to include "5th keep" articles and exclude "5th exclude" articles
 #
+# Update April 15, 2025:  per reviewer recommendations, added functionality to sort by modality
+#
 # Copyright Andrew James PhD, 5-2-2024
 
 ## Initializing
@@ -44,19 +46,32 @@ ctx = ssl.create_default_context()
 ctx.check_hostname = False
 ctx.verify_mode = ssl.CERT_NONE
 
+# Sort studies by modality; or set modality = '' if not sorting
+modality = ''
+#modality = 'sMRI'
+#modality = 't-fMRI'
+#modality = 'rs-fMRI'
+#modality = 'DTI'
+if len(modality) > 0:
+    modality_filestr = '_' + modality
+else:
+    modality_filestr = ''
+
+
+
 # declare XML file to read and Sleuth/GingerALE text output
 #  note, hardcoded
 xml_filename = dir_data + 'Resilience_Systematic_Review_2025.xml' # library was renamed for mansucript submission to be more specific;  filename updated here 9/4/2024
-roifile_res = './rois_resilience.txt'
-roifile_res_MDD = './rois_resilience_MDD.txt'
-roifile_res_PTSD = './rois_resilience_PTSD.txt'
-roifile_res_SZ = './rois_resilience_SZ.txt'
-roifile_res_BD = './rois_resilience_BD.txt'
-roifile_sus = './rois_susceptibility.txt'
-roifile_sus_MDD = './rois_susceptibility_MDD.txt'
-roifile_sus_PTSD = './rois_susceptibility_PTSD.txt'
-roifile_sus_SZ = './rois_susceptibility_SZ.txt'
-roifile_sus_BD = './rois_susceptibility_BD.txt'
+roifile_res = './rois_resilience' + modality_filestr + '.txt'
+roifile_res_MDD = './rois_resilience_MDD' + modality_filestr + '.txt'
+roifile_res_PTSD = './rois_resilience_PTSD' + modality_filestr + '.txt'
+roifile_res_SZ = './rois_resilience_SZ' + modality_filestr + '.txt'
+roifile_res_BD = './rois_resilience_BD' + modality_filestr + '.txt'
+roifile_sus = './rois_susceptibility' + modality_filestr + '.txt'
+roifile_sus_MDD = './rois_susceptibility_MDD' + modality_filestr + '.txt'
+roifile_sus_PTSD = './rois_susceptibility_PTSD' + modality_filestr + '.txt'
+roifile_sus_SZ = './rois_susceptibility_SZ' + modality_filestr + '.txt'
+roifile_sus_BD = './rois_susceptibility_BD' + modality_filestr + '.txt'
 # declare empty strings for Major Depressive Disorder (MDD), PTSD, Schizophrenia (SZ) and Bipolar disorder (BD)
 str_res = ''
 str_res_MDD = ''
@@ -115,7 +130,7 @@ with open(roifile_res, 'w', encoding='utf-16') as f:
             # extract year
             thisdate = thisrecord.findall('dates')
             thisyear = thisdate[0][0].text
-            print(thisyear)
+            #print(thisyear)
 
             # extract first author surname
             thiscontributors = thisrecord.findall('contributors')
@@ -125,7 +140,7 @@ with open(roifile_res, 'w', encoding='utf-16') as f:
                 thisauthor_full = thiscontributors[0][0][0].text
             thisauthor_split = thisauthor_full.split(',')
             thisauthor_lastname = thisauthor_split[0]
-            print(thisauthor_lastname)
+            #print(thisauthor_lastname)
 
             # initialize sample size to 0;   will replace with N=xxx in research-notes  later
             N=0
@@ -149,6 +164,23 @@ with open(roifile_res, 'w', encoding='utf-16') as f:
             str_to_write = '' # empty string that will be filled with meta-data and written to file as appropriate
 
             for temp in research_notes:
+                # Per reviewer recommendation, adding functionality to screen records by modality
+                if len(modality) > 0:
+                    skip_flag = 1
+                    modality_str = 'modality ' + modality
+                    # skip flag was added to detect if record modality matched a given modality. If not, skip to next record
+                    # default is to skip
+                    line = str(temp.text)
+                    for entry in line.split('\r\r'):
+                        if modality in entry:
+                            print(thisauthor_lastname, thisyear, entry)
+                            skip_flag=0
+                    if skip_flag == 1:
+                        print('skip')
+                        continue
+                    print('did not skip')
+                    print('Adding', thisauthor_lastname, thisyear, entry, 'for modality', modality)
+
                 print_flag = 0
                 # print flag will create block of Sleuth/GingerALE readable text if it finds "4th resilienc*
                 # First line will be commented text with year, author, journal, sample size (?)
@@ -303,6 +335,22 @@ with open(roifile_sus, 'w', encoding='utf-16') as f:
             str_to_write = '' # empty string that will be filled with meta-data and written to file as appropriate
 
             for temp in research_notes:
+                # Per reviewer recommendation, adding functionality to screen records by modality
+                skip_flag = 1
+                if len(modality) > 0:
+                    modality_str = 'modality ' + modality
+                    # skip flag was added to detect if record modality matched a given modality. If not, skip to next record
+                    # default is to skip
+                    line = str(temp.text)
+                    for entry in line.split('\r\r'):
+                        if modality in entry:
+                            print(thisauthor_lastname, thisyear, entry)
+                            skip_flag = 0
+                    if skip_flag == 1:
+                        print('skip')
+                    print('did not skip')
+                    print('Adding', thisauthor_lastname, thisyear, entry, 'for modality', modality)
+
                 print_flag = 0
                 # print flag will create block of Sleuth/GingerALE readable text if it finds "4th susc*
                 # First line will be commented text with year, author, journal, sample size (?)
@@ -580,7 +628,7 @@ for i in range(len(disorders)):
         dis2 = disorders[j]
         file1 = eval('roifile_res_' +dis1)
         file2 = eval('roifile_res_' + dis2)
-        fileout = './rois_resilience_combined_' + dis1 + '_' + dis2 + '.txt'
+        fileout = './rois_resilience_combined_' + dis1 + '_' + dis2 + modality_filestr + '.txt'
         with open(file1, 'r', encoding='utf-8') as f1:
             coords1 = f1.read()
         with open(file2, 'r', encoding='utf-8') as f2:
@@ -598,7 +646,7 @@ for i in range(len(disorders)):
         dis2 = disorders[j]
         file1 = eval('roifile_sus_' +dis1)
         file2 = eval('roifile_sus_' + dis2)
-        fileout = './rois_susceptibility_combined_' + dis1 + '_' + dis2 + '.txt'
+        fileout = './rois_susceptibility_combined_' + dis1 + '_' + dis2 + modality_filestr + '.txt'
         with open(file1, 'r', encoding='utf-8') as f1:
             coords1 = f1.read()
         with open(file2, 'r', encoding='utf-8') as f2:
